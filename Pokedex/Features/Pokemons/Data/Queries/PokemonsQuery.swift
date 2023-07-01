@@ -10,7 +10,7 @@ import Foundation
 enum PokemonsQuery {
     static let query: String = """
     query pokemons {
-      pokemon_v2_pokemon(limit: 10) {
+      pokemon_v2_pokemon(limit: 15) {
         id
         name
             pokemon_v2_pokemonsprites {

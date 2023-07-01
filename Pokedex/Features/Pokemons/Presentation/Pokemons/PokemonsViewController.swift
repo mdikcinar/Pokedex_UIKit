@@ -30,8 +30,8 @@ class PokemonsViewController: UIViewController {
     private func setupBinders() {
         pokemonsViewModel.$pokemons
             .receive(on: RunLoop.main)
-            .sink { pokemons in
-                print("retrieved \(pokemons.count) pokemons")
+            .sink { _ in
+                self.pokemonsTableView.reloadData()
             }
             .store(in: &cancellables)
 
@@ -56,11 +56,22 @@ class PokemonsViewController: UIViewController {
 
 extension PokemonsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return pokemonsViewModel.pokemons.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let pokemon = pokemonsViewModel.pokemons[indexPath.row]
         let pokemonCell = pokemonsTableView.dequeueReusableCell(withIdentifier: Constants.pokemonsCellIdentifier, for: indexPath)
+        var pokemonCellDefaultConfiguration = pokemonCell.defaultContentConfiguration()
+        pokemonCellDefaultConfiguration.text = pokemon.name
+        pokemonCellDefaultConfiguration.secondaryText = pokemon.sprites.front_default
+        pokemonCell.contentConfiguration = pokemonCellDefaultConfiguration
         return pokemonCell
+    }
+}
+
+extension PokemonsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
